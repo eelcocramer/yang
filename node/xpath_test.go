@@ -98,3 +98,35 @@ func TestXFind(t *testing.T) {
 		}
 	}
 }
+
+func TestXPathContextIssue(t *testing.T) {
+	//fc.DebugLog(true)
+	mstr := ` module m { namespace ""; prefix ""; revision 0;
+		container a {
+			leaf b {
+				type int32;
+			}
+			leaf c {
+				when "b > 10";
+				type int32;
+			}
+		}
+	}
+	`
+	m, err := parser.LoadModuleFromString(nil, mstr)
+	if err != nil {
+		t.Fatal(err)
+	}
+	n, err := nodeutil.ReadJSON(`{
+		"a":{"b":11, "c":10}
+	}`)
+	if err != nil {
+		t.Errorf("did not expect an error but got: %v", err)
+	}
+	b := node.NewBrowser(m, n)
+
+	_, err = nodeutil.WriteJSON(b.Root())
+	if err != nil {
+		t.Errorf("did not expect an error but got: %v", err)
+	}
+}
