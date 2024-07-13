@@ -107,7 +107,7 @@ func TestXPathContextIssue(t *testing.T) {
 				type int32;
 			}
 			leaf c {
-				when "b > 10";
+				when "../b > 10";
 				type int32;
 			}
 		}
